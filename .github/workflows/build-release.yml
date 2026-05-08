@@ -44,9 +44,25 @@ jobs:
       - name: Build Release APK
         run: ./gradlew assembleRelease --stacktrace
 
-      - name: Upload Release APK
+      - name: Upload Release APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-${{ github.sha }}
           path: app/build/outputs/apk/release/*.apk
           retention-days: 30
+
+      - name: Extract version name
+        if: github.event_name == 'push'
+        id: version
+        run: |
+          VERSION=$(grep 'versionName' app/build.gradle.kts | grep -o '"[^"]*"' | tr -d '"')
+          echo "name=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.name }}-${{ github.run_number }}
+          name: v${{ steps.version.outputs.name }} (build #${{ github.run_number }})
+          files: app/build/outputs/apk/release/*.apk
+          make_latest: true
