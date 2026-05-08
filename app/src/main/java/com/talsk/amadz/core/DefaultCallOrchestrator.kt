@@ -37,7 +37,7 @@ class DefaultCallOrchestrator @Inject constructor(
     private val blockedNumberRepository: BlockedNumberRepository,
     private val callUiEffects: CallUiEffects,
     private val fraudReporter: FraudReporter,
-    @ApplicationContext context: Context,
+    @ApplicationContext private val context: Context,
 ) : CallOrchestrator {
 
     private val _callState = MutableStateFlow<CallState>(CallState.Idle)
@@ -47,6 +47,7 @@ class DefaultCallOrchestrator @Inject constructor(
     private var sessionJob: Job? = null
     private var currentCall: Call? = null
     private var timerJob: Job? = null
+    private var autoAnswerJob: Job? = null
     private var callServiceAudioDelegate: CallServiceAudioDelegate? = null
 
     private var currentCallInitialState: Int? = null
@@ -116,6 +117,8 @@ class DefaultCallOrchestrator @Inject constructor(
     }
 
     private fun cancelSessionScope() {
+        autoAnswerJob?.cancel()
+        autoAnswerJob = null
         timerJob?.cancel()
         timerJob = null
         sessionScope?.cancel()
@@ -134,6 +137,8 @@ class DefaultCallOrchestrator @Inject constructor(
         val phone = call.callerPhone()
         when (state) {
             Call.STATE_ACTIVE -> {
+                autoAnswerJob?.cancel()
+                autoAnswerJob = null
                 _callState.value = CallState.Active(
                     duration = 0,
                     isMuted = micMuted,
@@ -220,6 +225,14 @@ class DefaultCallOrchestrator @Inject constructor(
                     fraudReporter.reportIncomingCall(phone)
                 }
                 callUiEffects.showIncoming(phone)
+                if (AutoAnswerPrefs.isEnabled(context)) {
+                    autoAnswerJob = sessionScopeOrCreate().launch {
+                        delay(AutoAnswerPrefs.DEFAULT_DELAY_MS)
+                        if (currentCall?.stateCompat == Call.STATE_RINGING) {
+                            onAction(CallAction.Answer)
+                        }
+                    }
+                }
             }
         }
     }

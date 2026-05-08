@@ -11,6 +11,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.PhoneCallback
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.talsk.amadz.core.AutoAnswerPrefs
 import com.talsk.amadz.core.DtmfTonePrefs
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,6 +46,9 @@ fun SettingsScreen(
     }
     var dtmfTonesEnabled by remember {
         mutableStateOf(prefs.getBoolean(DtmfTonePrefs.KEY_DTMF_TONE_ENABLED, true))
+    }
+    var autoAnswerEnabled by remember {
+        mutableStateOf(prefs.getBoolean(AutoAnswerPrefs.KEY_AUTO_ANSWER_ENABLED, true))
     }
     var showClearLogsDialog by remember { mutableStateOf(false) }
 
@@ -80,6 +85,28 @@ fun SettingsScreen(
                             dtmfTonesEnabled = enabled
                             prefs.edit()
                                 .putBoolean(DtmfTonePrefs.KEY_DTMF_TONE_ENABLED, enabled)
+                                .apply()
+                        }
+                    )
+                }
+            )
+
+            ListItem(
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.Default.PhoneCallback,
+                        contentDescription = "Auto answer"
+                    )
+                },
+                headlineContent = { Text("Auto answer") },
+                supportingContent = { Text("Automatically answer incoming calls after 1.5 seconds") },
+                trailingContent = {
+                    Switch(
+                        checked = autoAnswerEnabled,
+                        onCheckedChange = { enabled ->
+                            autoAnswerEnabled = enabled
+                            prefs.edit()
+                                .putBoolean(AutoAnswerPrefs.KEY_AUTO_ANSWER_ENABLED, enabled)
                                 .apply()
                         }
                     )
