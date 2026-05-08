@@ -12,10 +12,13 @@ plugins {
 android {
     signingConfigs {
         create("release") {
-            keyAlias = "Amadz1122"
-            keyPassword = "Amadz1122"
-            storeFile = file("../signature/release.keystore")
-            storePassword = "Amadz1122"
+            val keystoreFile = rootProject.file("signature/release.keystore")
+            if (keystoreFile.exists()) {
+                keyAlias = "Amadz1122"
+                keyPassword = "Amadz1122"
+                storeFile = keystoreFile
+                storePassword = "Amadz1122"
+            }
         }
     }
 
