@@ -7,10 +7,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.talsk.amadz.core.dial
 import com.talsk.amadz.core.hasDefaultCallingSimConfigured
 import com.talsk.amadz.domain.repo.SimInfoProvider
+import com.talsk.amadz.ui.AppStartupState
+import com.talsk.amadz.ui.AppViewModel
 import com.talsk.amadz.ui.MainNavGraph
 import com.talsk.amadz.ui.onboarding.OnboardingActivity
 import com.talsk.amadz.ui.theme.AmadzTheme
@@ -24,19 +27,47 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var simInfoProvider: SimInfoProvider
 
+    private val appViewModel: AppViewModel by viewModels()
+
     private val permissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions(), {})
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
         if (savedInstanceState == null) {
             handleDialIntent(intent)
         }
-        checkPermission()
+
+        // 尚未設定為預設撥號 App → 先跳 Onboarding
+        if (!PermissionChecker.isDefaultPhoneApp(this)) {
+            startActivity(Intent(this, OnboardingActivity::class.java))
+            finish()
+            return
+        }
+
+        // 請求電話相關權限
+        if (!PermissionChecker.hasAllPermissions(this)) {
+            permissionLauncher.launch(
+                arrayOf(
+                    android.Manifest.permission.CALL_PHONE,
+                    android.Manifest.permission.READ_CALL_LOG,
+                    android.Manifest.permission.READ_CONTACTS,
+                    android.Manifest.permission.WRITE_CONTACTS,
+                    android.Manifest.permission.POST_NOTIFICATIONS,
+                )
+            )
+        }
+
+        // 保持 SplashScreen 直到 auth 狀態確定
+        splashScreen.setKeepOnScreenCondition {
+            appViewModel.startupState.value == AppStartupState.Loading
+        }
+
         setContent {
             AmadzTheme {
-                MainNavGraph()
+                MainNavGraph(appViewModel = appViewModel)
             }
         }
     }
@@ -48,7 +79,6 @@ class MainActivity : ComponentActivity() {
 
     private fun handleDialIntent(intent: Intent) {
         val phoneNumber = extractPhoneNumber(intent) ?: return
-
         when (intent.action) {
             Intent.ACTION_CALL,
             Intent.ACTION_VOICE_COMMAND,
@@ -64,17 +94,13 @@ class MainActivity : ComponentActivity() {
             val items = sims.map {
                 it.displayName?.takeIf(String::isNotBlank) ?: "SIM ${it.simSlotIndex + 1}"
             }.toTypedArray()
-
             AlertDialog.Builder(this)
-                .setTitle("Choose SIM")
+                .setTitle("選擇 SIM 卡")
                 .setItems(items) { dialog, which ->
-                    val selected = sims.getOrNull(which)
-                    if (selected != null) {
-                        dial(phone = phone, accountId = selected.accountId)
-                    }
+                    sims.getOrNull(which)?.let { dial(phone = phone, accountId = it.accountId) }
                     dialog.dismiss()
                 }
-                .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+                .setNegativeButton("取消") { dialog, _ -> dialog.dismiss() }
                 .show()
         } else {
             dial(phone)
@@ -85,29 +111,6 @@ class MainActivity : ComponentActivity() {
         val data: Uri? = intent.data
         val fromData = data?.schemeSpecificPart?.takeIf { it.isNotBlank() }
         if (fromData != null) return fromData
-
-        val fromExtra = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER)?.takeIf { it.isNotBlank() }
-        if (fromExtra != null) return fromExtra
-
-        return null
-    }
-
-
-    private fun checkPermission() {
-        val defaultPhoneApp = PermissionChecker.isDefaultPhoneApp(this)
-        if (defaultPhoneApp.not()) {
-            startActivity(Intent(this, OnboardingActivity::class.java)).also { finish() }
-        } else {
-            if (PermissionChecker.hasAllPermissions(this).not()) {
-                permissionLauncher.launch(
-                    arrayOf(
-                        android.Manifest.permission.CALL_PHONE,
-                        android.Manifest.permission.READ_CALL_LOG,
-                        android.Manifest.permission.READ_CONTACTS,
-                        android.Manifest.permission.WRITE_CONTACTS
-                    )
-                )
-            }
-        }
+        return intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER)?.takeIf { it.isNotBlank() }
     }
 }

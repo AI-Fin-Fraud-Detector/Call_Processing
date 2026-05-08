@@ -2,29 +2,47 @@ package com.talsk.amadz.ui
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.talsk.amadz.ui.auth.AuthNavGraph
 import com.talsk.amadz.ui.home.HomeScreen
 import kotlinx.serialization.Serializable
-
 
 @Serializable
 data object HomeKey : NavKey
 
-/**
- * Created by Muhammad Usman : msusman97@gmail.com on 11/16/2023.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainNavGraph() {
-    val backStack = rememberNavBackStack(HomeKey)
-    NavDisplay(
-        backStack = backStack, entryProvider = entryProvider {
-            entry<HomeKey> {
-                HomeScreen()
-            }
-        })
+fun MainNavGraph(appViewModel: AppViewModel = hiltViewModel()) {
+    val startupState by appViewModel.startupState.collectAsStateWithLifecycle()
 
+    when (val state = startupState) {
+        is AppStartupState.Loading -> {
+            // Splash Screen 保持顯示直到狀態確定，不需額外 UI
+        }
+
+        is AppStartupState.NeedsAuth -> {
+            AuthNavGraph(
+                sessionExpired = state.sessionExpired,
+                onLoginSuccess = { token -> appViewModel.onLoginSuccess(token) }
+            )
+        }
+
+        is AppStartupState.Authenticated -> {
+            val backStack = rememberNavBackStack(HomeKey)
+            NavDisplay(
+                backStack = backStack,
+                entryProvider = entryProvider {
+                    entry<HomeKey> {
+                        HomeScreen()
+                    }
+                }
+            )
+        }
+    }
 }

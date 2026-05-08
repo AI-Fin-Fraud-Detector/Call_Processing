@@ -1,0 +1,81 @@
+package com.talsk.amadz.data
+
+import com.google.gson.Gson
+import com.talsk.amadz.data.network.AuthApiService
+import com.talsk.amadz.data.network.FraudApiService
+import com.talsk.amadz.data.network.PushApiService
+import com.talsk.amadz.data.network.dto.ApiErrorDto
+import com.talsk.amadz.data.network.dto.FraudReportRequestDto
+import com.talsk.amadz.data.network.dto.LoginRequestDto
+import com.talsk.amadz.data.network.dto.PushSubscribeRequestDto
+import com.talsk.amadz.data.network.dto.RegisterRequestDto
+import com.talsk.amadz.domain.entity.UserProfile
+import com.talsk.amadz.domain.repo.AuthRepository
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class AuthRepositoryImpl @Inject constructor(
+    private val authApiService: AuthApiService,
+    private val pushApiService: PushApiService,
+    private val fraudApiService: FraudApiService,
+) : AuthRepository {
+
+    override suspend fun login(email: String, password: String): Result<String> = runCatching {
+        val response = authApiService.login(LoginRequestDto(email, password))
+        if (response.isSuccessful) {
+            response.body()?.accessToken ?: error("Empty response body")
+        } else {
+            val msg = if (response.code() == 401) "Email 或密碼不正確" else "登入失敗 (${response.code()})"
+            error(msg)
+        }
+    }
+
+    override suspend fun register(
+        email: String,
+        phoneNumber: String,
+        name: String,
+        password: String
+    ): Result<UserProfile> = runCatching {
+        val response = authApiService.register(RegisterRequestDto(email, phoneNumber, name, password))
+        if (response.isSuccessful) {
+            val dto = response.body() ?: error("Empty response body")
+            UserProfile(dto.uuid, dto.email, dto.phoneNumber, dto.name)
+        } else {
+            val detail = parseErrorDetail(response.errorBody()?.string())
+            error(detail ?: "註冊失敗 (${response.code()})")
+        }
+    }
+
+    override suspend fun getAuthStatus(token: String): Result<UserProfile> = runCatching {
+        val response = authApiService.getStatus("Bearer $token")
+        if (response.isSuccessful) {
+            val dto = response.body() ?: error("Empty response body")
+            UserProfile(dto.uuid, dto.email, dto.phoneNumber, dto.name)
+        } else {
+            error("Unauthorized")
+        }
+    }
+
+    override suspend fun subscribePush(token: String, fcmToken: String): Result<Unit> = runCatching {
+        val response = pushApiService.subscribe(
+            "Bearer $token",
+            PushSubscribeRequestDto(platform = "fcm", fcmToken = fcmToken)
+        )
+        if (!response.isSuccessful) error("Push 訂閱失敗 (${response.code()})")
+    }
+
+    override suspend fun reportIncomingCall(token: String, phoneNumber: String): Result<Unit> = runCatching {
+        val response = fraudApiService.reportIncomingCall(
+            "Bearer $token",
+            FraudReportRequestDto(phoneNumber = phoneNumber)
+        )
+        if (!response.isSuccessful) error("通話回報失敗 (${response.code()})")
+    }
+
+    private fun parseErrorDetail(body: String?): String? = try {
+        body?.let { Gson().fromJson(it, ApiErrorDto::class.java)?.detail }
+    } catch (_: Exception) {
+        body
+    }
+}

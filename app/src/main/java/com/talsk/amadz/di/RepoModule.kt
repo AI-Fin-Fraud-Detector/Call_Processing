@@ -1,7 +1,9 @@
 package com.talsk.amadz.di
 
+import com.talsk.amadz.data.AuthRepositoryImpl
 import com.talsk.amadz.data.ContactPhotoProviderImpl
 import com.talsk.amadz.data.BlockedNumberRepositoryImpl
+import com.talsk.amadz.domain.repo.AuthRepository
 import com.talsk.amadz.core.CallUiEffects
 import com.talsk.amadz.core.CallUiEffectsHandler
 import com.talsk.amadz.core.DefaultCallOrchestrator
@@ -96,4 +98,10 @@ abstract class RepoModule {
     abstract fun bindBlockedNumberRepository(
         impl: BlockedNumberRepositoryImpl
     ): BlockedNumberRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(
+        impl: AuthRepositoryImpl
+    ): AuthRepository
 }

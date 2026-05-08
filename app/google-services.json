@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "541771759091",
+    "project_id": "aio-kebbi",
+    "storage_bucket": "aio-kebbi.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541771759091:android:5aa0d45416bdcb00afa686",
+        "android_client_info": {
+          "package_name": "com.talsk.amadz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-uzqGF8rBYt0_YZTON91TydVv4_p7zbU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541771759091:android:953668d6ffb82931afa686",
+        "android_client_info": {
+          "package_name": "tw.futuremedialab.frauddetect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-uzqGF8rBYt0_YZTON91TydVv4_p7zbU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

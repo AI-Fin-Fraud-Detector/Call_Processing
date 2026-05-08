@@ -12,6 +12,7 @@ import com.talsk.amadz.domain.CallOrchestrator
 import com.talsk.amadz.domain.CallServiceAudioDelegate
 import com.talsk.amadz.domain.entity.CallDirection
 import com.talsk.amadz.domain.entity.CallState
+import com.talsk.amadz.domain.FraudReporter
 import com.talsk.amadz.domain.repo.BlockedNumberRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +36,7 @@ private const val TAG = "DefaultCallOrchestrator"
 class DefaultCallOrchestrator @Inject constructor(
     private val blockedNumberRepository: BlockedNumberRepository,
     private val callUiEffects: CallUiEffects,
+    private val fraudReporter: FraudReporter,
     @ApplicationContext context: Context,
 ) : CallOrchestrator {
 
@@ -213,6 +215,9 @@ class DefaultCallOrchestrator @Inject constructor(
                     onAction(CallAction.Hangup)
                     callUiEffects.stopCallUi()
                     return
+                }
+                sessionScopeOrCreate().launch {
+                    fraudReporter.reportIncomingCall(phone)
                 }
                 callUiEffects.showIncoming(phone)
             }
