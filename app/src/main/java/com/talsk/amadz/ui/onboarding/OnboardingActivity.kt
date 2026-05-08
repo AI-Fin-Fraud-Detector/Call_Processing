@@ -1,16 +1,12 @@
 package com.talsk.amadz.ui.onboarding
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.talsk.amadz.MainActivity
 import com.talsk.amadz.ui.theme.AmadzTheme
 import com.talsk.amadz.util.PermissionChecker
@@ -36,7 +32,15 @@ class OnboardingActivity : ComponentActivity() {
                 OnboardingScreen(
                     onRequestDialerPermission = {
                         dialerLauncher.launch(dialerRequestIntent)
-                    })
+                    },
+                    onOpenAppSettings = {
+                        startActivity(
+                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                data = Uri.fromParts("package", packageName, null)
+                            }
+                        )
+                    }
+                )
             }
         }
     }
@@ -45,6 +49,4 @@ class OnboardingActivity : ComponentActivity() {
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
-
 }
-
