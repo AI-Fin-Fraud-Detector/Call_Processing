@@ -14,10 +14,10 @@ android {
         create("release") {
             val keystoreFile = rootProject.file("signature/release.keystore")
             if (keystoreFile.exists()) {
-                keyAlias = "Amadz1122"
-                keyPassword = "Amadz1122"
+                keyAlias = "futuremedialab"
+                keyPassword = "nccufuturemedialab"
                 storeFile = keystoreFile
-                storePassword = "Amadz1122"
+                storePassword = "nccufuturemedialab"
             }
         }
     }
