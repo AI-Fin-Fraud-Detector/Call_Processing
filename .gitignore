@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+.kotlin/
+
+# Sensitive files managed via GitHub Secrets
+signature/release.keystore
+app/google-services.json

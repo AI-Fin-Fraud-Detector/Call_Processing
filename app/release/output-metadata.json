@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.talsk.amadz",
+  "applicationId": "tw.futuremedialab.mycall",
   "variantName": "release",
   "elements": [
     {

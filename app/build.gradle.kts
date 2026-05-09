@@ -6,23 +6,27 @@ plugins {
     alias(libs.plugins.serialization)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.google.services)
 }
 
 android {
     signingConfigs {
         create("release") {
-            keyAlias = "Amadz1122"
-            keyPassword = "Amadz1122"
-            storeFile = file("../signature/release.keystore")
-            storePassword = "Amadz1122"
+            val keystoreFile = rootProject.file("signature/release.keystore")
+            if (keystoreFile.exists()) {
+                keyAlias = "Amadz1122"
+                keyPassword = "Amadz1122"
+                storeFile = keystoreFile
+                storePassword = "Amadz1122"
+            }
         }
     }
 
-    namespace = "com.talsk.amadz"
+    namespace = "tw.futuremedialab.mycall"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.talsk.amadz"
+        applicationId = "tw.futuremedialab.mycall"
         minSdk = 26
         targetSdk = 36
         versionCode = 15
@@ -46,8 +50,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     packaging {
@@ -67,13 +71,14 @@ android {
 kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
-        jvmTarget = JvmTarget.JVM_17
+        jvmTarget = JvmTarget.JVM_21
     }
 }
 
 dependencies {
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.android.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -97,5 +102,12 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.paging)
     implementation(libs.androidx.paging.compose)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp.logging)
+    implementation(libs.datastore.preferences)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
+    implementation(libs.kotlinx.coroutines.play.services)
 
 }
