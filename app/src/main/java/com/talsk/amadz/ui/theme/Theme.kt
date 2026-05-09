@@ -115,12 +115,12 @@ fun AmadzTheme(
 
         }
     }
-    Surface(
-        modifier = Modifier.fillMaxSize()
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
     ) {
-        MaterialTheme(
-            colorScheme = colorScheme,
-            typography = Typography,
+        Surface(
+            modifier = Modifier.fillMaxSize(),
             content = content
         )
     }
