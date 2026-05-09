@@ -22,7 +22,7 @@ class LoginViewModel @Inject constructor(
 
     fun login(onSuccess: (String) -> Unit) {
         if (email.isBlank() || password.isBlank()) {
-            errorMessage = "請輸入 Email 與密碼"
+            errorMessage = "Please enter Email and password"
             return
         }
         viewModelScope.launch {

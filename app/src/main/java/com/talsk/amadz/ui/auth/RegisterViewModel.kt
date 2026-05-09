@@ -25,7 +25,7 @@ class RegisterViewModel @Inject constructor(
 
     fun register(onSuccess: () -> Unit) {
         if (email.isBlank() || phoneNumber.isBlank() || name.isBlank() || password.isBlank()) {
-            errorMessage = "請填寫所有欄位"
+            errorMessage = "Please fill in all fields"
             return
         }
         viewModelScope.launch {

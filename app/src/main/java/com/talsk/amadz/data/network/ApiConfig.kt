@@ -1,6 +1,6 @@
 package com.talsk.amadz.data.network
 
 object ApiConfig {
-    // TODO: 替換為正式 API server URL（結尾須含 /）
+    // TODO: Replace with production API server URL (must end with /)
     const val BASE_URL = "https://vision.futuremedialab.tw:1688/"
 }

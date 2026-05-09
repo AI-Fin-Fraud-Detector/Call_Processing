@@ -45,7 +45,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "歡迎使用 Amadz",
+            text = "Welcome to MyCall",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
@@ -54,7 +54,7 @@ fun LoginScreen(
 
         if (sessionExpired) {
             Text(
-                text = "登入已過期，請重新登入",
+                text = "Login expired, please log in again",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.error,
                 textAlign = TextAlign.Center
@@ -78,7 +78,7 @@ fun LoginScreen(
         OutlinedTextField(
             value = vm.password,
             onValueChange = { vm.password = it },
-            label = { Text("密碼") },
+            label = { Text("Password") },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -108,14 +108,14 @@ fun LoginScreen(
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             } else {
-                Text("登入")
+                Text("Login")
             }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
         TextButton(onClick = onRegisterClick) {
-            Text("還沒有帳號？立即註冊")
+            Text("Don't have an account? Register now")
         }
     }
 }

@@ -23,7 +23,7 @@ fun MainNavGraph(appViewModel: AppViewModel = hiltViewModel()) {
 
     when (val state = startupState) {
         is AppStartupState.Loading -> {
-            // Splash Screen 保持顯示直到狀態確定，不需額外 UI
+            // Keep Splash Screen until state is determined, no extra UI needed
         }
 
         is AppStartupState.NeedsAuth -> {

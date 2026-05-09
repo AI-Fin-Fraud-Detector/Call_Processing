@@ -26,7 +26,7 @@ class AuthRepositoryImpl @Inject constructor(
         if (response.isSuccessful) {
             response.body()?.accessToken ?: error("Empty response body")
         } else {
-            val msg = if (response.code() == 401) "Email 或密碼不正確" else "登入失敗 (${response.code()})"
+            val msg = if (response.code() == 401) "Incorrect email or password" else "Login failed (${response.code()})"
             error(msg)
         }
     }
@@ -43,7 +43,7 @@ class AuthRepositoryImpl @Inject constructor(
             UserProfile(dto.uuid, dto.email, dto.phoneNumber, dto.name)
         } else {
             val detail = parseErrorDetail(response.errorBody()?.string())
-            error(detail ?: "註冊失敗 (${response.code()})")
+            error(detail ?: "Registration failed (${response.code()})")
         }
     }
 
@@ -62,7 +62,7 @@ class AuthRepositoryImpl @Inject constructor(
             "Bearer $token",
             PushSubscribeRequestDto(platform = "fcm", fcmToken = fcmToken)
         )
-        if (!response.isSuccessful) error("Push 訂閱失敗 (${response.code()})")
+        if (!response.isSuccessful) error("Push subscription failed (${response.code()})")
     }
 
     override suspend fun reportIncomingCall(token: String, phoneNumber: String): Result<Unit> = runCatching {
@@ -70,7 +70,7 @@ class AuthRepositoryImpl @Inject constructor(
             "Bearer $token",
             FraudReportRequestDto(phoneNumber = phoneNumber)
         )
-        if (!response.isSuccessful) error("通話回報失敗 (${response.code()})")
+        if (!response.isSuccessful) error("Call report failed (${response.code()})")
     }
 
     private fun parseErrorDetail(body: String?): String? = try {

@@ -43,7 +43,7 @@ fun OnboardingScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // 主要內容區
+        // Main content area
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.Center,
@@ -57,17 +57,17 @@ fun OnboardingScreen(
             Spacer(modifier = Modifier.height(56.dp))
             Text(
                 style = MaterialTheme.typography.titleMedium,
-                text = "將 MyCall 設為預設電話應用程式，享有完整通話體驗與詐騙偵測防護。",
+                text = "Set MyCall as your default phone app for full call experience and scam detection protection.",
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Normal
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = onRequestDialerPermission) {
-                Text(text = "設為預設電話 App")
+                Text(text = "Set as default phone app")
             }
         }
 
-        // 底部：前往應用程式設定
+        // Bottom: go to app settings
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -75,7 +75,7 @@ fun OnboardingScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "需要手動調整權限？",
+                text = "Need to manually adjust permissions?",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -90,7 +90,7 @@ fun OnboardingScreen(
                         contentDescription = null,
                         modifier = Modifier.size(16.dp)
                     )
-                    Text(text = "開啟應用程式設定")
+                    Text(text = "Open app settings")
                 }
             }
         }

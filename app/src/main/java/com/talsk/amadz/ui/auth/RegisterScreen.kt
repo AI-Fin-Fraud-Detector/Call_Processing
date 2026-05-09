@@ -47,7 +47,7 @@ fun RegisterScreen(
 
     LaunchedEffect(vm.isSuccess) {
         if (vm.isSuccess) {
-            snackbarHostState.showSnackbar("註冊成功！請登入")
+            snackbarHostState.showSnackbar("Registration successful! Please log in")
             onSuccess()
         }
     }
@@ -56,10 +56,10 @@ fun RegisterScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("建立帳號") },
+                title = { Text("Create account") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -78,7 +78,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = vm.name,
                 onValueChange = { vm.name = it },
-                label = { Text("顯示名稱") },
+                label = { Text("Display name") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -99,7 +99,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = vm.phoneNumber,
                 onValueChange = { vm.phoneNumber = it },
-                label = { Text("手機號碼（含國碼，例如 +886912345678）") },
+                label = { Text("Phone number (with country code, e.g. +886912345678)") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = Modifier.fillMaxWidth()
@@ -110,7 +110,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = vm.password,
                 onValueChange = { vm.password = it },
-                label = { Text("密碼") },
+                label = { Text("Password") },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -140,7 +140,7 @@ fun RegisterScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
-                    Text("建立帳號")
+                    Text("Create account")
                 }
             }
         }

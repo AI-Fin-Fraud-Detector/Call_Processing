@@ -40,14 +40,14 @@ class MainActivity : ComponentActivity() {
             handleDialIntent(intent)
         }
 
-        // 尚未設定為預設撥號 App → 先跳 Onboarding
+        // Not set as default dialer app → go to Onboarding first
         if (!PermissionChecker.isDefaultPhoneApp(this)) {
             startActivity(Intent(this, OnboardingActivity::class.java))
             finish()
             return
         }
 
-        // 請求電話相關權限
+        // Request phone-related permissions
         if (!PermissionChecker.hasAllPermissions(this)) {
             permissionLauncher.launch(
                 arrayOf(
@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
             )
         }
 
-        // 保持 SplashScreen 直到 auth 狀態確定
+        // Keep SplashScreen until auth state is determined
         splashScreen.setKeepOnScreenCondition {
             appViewModel.startupState.value == AppStartupState.Loading
         }
@@ -95,12 +95,12 @@ class MainActivity : ComponentActivity() {
                 it.displayName?.takeIf(String::isNotBlank) ?: "SIM ${it.simSlotIndex + 1}"
             }.toTypedArray()
             AlertDialog.Builder(this)
-                .setTitle("選擇 SIM 卡")
+                .setTitle("Select SIM card")
                 .setItems(items) { dialog, which ->
                     sims.getOrNull(which)?.let { dial(phone = phone, accountId = it.accountId) }
                     dialog.dismiss()
                 }
-                .setNegativeButton("取消") { dialog, _ -> dialog.dismiss() }
+                .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
                 .show()
         } else {
             dial(phone)
