@@ -22,11 +22,11 @@ android {
         }
     }
 
-    namespace = "com.talsk.amadz"
+    namespace = "tw.futuremedialab.mycall"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.talsk.amadz"
+        applicationId = "tw.futuremedialab.mycall"
         minSdk = 26
         targetSdk = 36
         versionCode = 15

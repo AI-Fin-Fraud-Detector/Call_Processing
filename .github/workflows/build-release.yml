@@ -2,12 +2,9 @@ name: Build Release APK
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ master ]
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    branches: [ master, develop ]
 
 jobs:
   build:
@@ -55,6 +52,7 @@ jobs:
       - name: Build Release APK
         run: ./gradlew assembleRelease --stacktrace
 
+      # Upload artifact for BOTH master and develop
       - name: Upload Release APK artifact
         uses: actions/upload-artifact@v5
         with:
@@ -62,20 +60,21 @@ jobs:
           path: app/build/outputs/apk/release/*.apk
           retention-days: 30
 
+      # Only run release steps on master branch pushes
       - name: Extract version name
-        if: github.event_name == 'push'
+        if: github.ref == 'refs/heads/master'
         id: version
         run: |
           VERSION=$(grep 'versionName' app/build.gradle.kts | grep -o '"[^"]*"' | tr -d '"')
           echo "name=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Get short SHA
-        if: github.event_name == 'push'
+        if: github.ref == 'refs/heads/master'
         id: sha
         run: echo "short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
-        if: github.event_name == 'push'
+        if: github.ref == 'refs/heads/master'
         uses: softprops/action-gh-release@v3
         with:
           tag_name: "v${{ steps.version.outputs.name }}-${{ steps.sha.outputs.short }}"
