@@ -6,13 +6,13 @@ A modern open-source Android calling application built with Jetpack Compose. For
 
 [<img src="https://raw.githubusercontent.com/rubenpgrady/get-it-on-github/refs/heads/main/get-it-on-github.png"
     alt="Get it on GitHub"
-    height="80">](https://github.com/AI-Fin-Fraud-Detector/Call_Processing/releases)
+    height="80">](https://github.com/AI-Fin-Fraud-Detector/MyCall/releases)
 [<img src="https://github.com/user-attachments/assets/713d71c5-3dec-4ec4-a3f2-8d28d025a9c6"
     alt="Get it on Obtainium"
-    height="80">](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/AI-Fin-Fraud-Detector/Call_Processing)
+    height="80">](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/AI-Fin-Fraud-Detector/MyCall)
 [<img src="https://raw.githubusercontent.com/mueller-ma/android-common/main/assets/direct-apk-download.png"
     alt="Direct APK Download"
-    height="80">](https://github.com/AI-Fin-Fraud-Detector/Call_Processing/releases/latest/download/app-release.apk)
+    height="80">](https://github.com/AI-Fin-Fraud-Detector/MyCall/releases/latest/download/app-release.apk)
 
 <!-- [<img src="https://raw.githubusercontent.com/ImranR98/Obtainium/refs/heads/main/assets/graphics/badge_obtainium.png"
      alt="Get it on Obtainium"
