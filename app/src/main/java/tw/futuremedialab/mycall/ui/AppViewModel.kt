@@ -48,6 +48,7 @@ class AppViewModel @Inject constructor(
             }
             .onFailure {
                 Log.w(TAG, "Token invalid: ${it.message}")
+                userPreferences.clearAccessToken()
                 _startupState.value = AppStartupState.NeedsAuth(sessionExpired = true)
             }
     }
