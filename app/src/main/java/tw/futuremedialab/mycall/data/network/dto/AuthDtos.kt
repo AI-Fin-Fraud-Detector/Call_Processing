@@ -27,7 +27,8 @@ data class UserProfileDto(
 )
 
 data class FraudReportRequestDto(
-    @SerializedName("phone_number") val phoneNumber: String
+    @SerializedName("phone_number") val phoneNumber: String,
+    @SerializedName("caller_name") val callerName: String? = null
 )
 
 data class PushSubscribeRequestDto(

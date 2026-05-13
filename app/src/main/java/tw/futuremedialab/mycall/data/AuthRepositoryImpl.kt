@@ -65,10 +65,10 @@ class AuthRepositoryImpl @Inject constructor(
         if (!response.isSuccessful) error("Push subscription failed (${response.code()})")
     }
 
-    override suspend fun reportIncomingCall(token: String, phoneNumber: String): Result<Unit> = runCatching {
+    override suspend fun reportIncomingCall(token: String, phoneNumber: String, callerName: String?): Result<Unit> = runCatching {
         val response = fraudApiService.reportIncomingCall(
             "Bearer $token",
-            FraudReportRequestDto(phoneNumber = phoneNumber)
+            FraudReportRequestDto(phoneNumber = phoneNumber, callerName = callerName)
         )
         if (!response.isSuccessful) error("Call report failed (${response.code()})")
     }
