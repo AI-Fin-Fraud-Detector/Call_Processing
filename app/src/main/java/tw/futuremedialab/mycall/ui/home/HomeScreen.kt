@@ -52,6 +52,7 @@ fun HomeScreen() {
                 currentDestination == ContactsKey
 
     fun requestDial(phone: String) {
+        if (phone.isBlank()) return
         val sims = vm.getSimsInfo()
         if (sims.size > 1 && !context.hasDefaultCallingSimConfigured()) {
             pendingDialPhone = phone

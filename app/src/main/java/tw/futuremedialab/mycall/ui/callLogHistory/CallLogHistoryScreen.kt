@@ -155,13 +155,15 @@ private fun CallLogHistoryScreenInternal(
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = { onCallClick(state.phone) }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_call_24),
-                    contentDescription = "Call"
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text("Call")
+            if (state.phone.isNotBlank()) {
+                ExtendedFloatingActionButton(onClick = { onCallClick(state.phone) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_call_24),
+                        contentDescription = "Call"
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text("Call")
+                }
             }
         }
     ) { paddingValues ->

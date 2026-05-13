@@ -31,7 +31,9 @@ class CallViewModel @Inject constructor(
             .mapLatest { number ->
                 val normalizedNumber = number.trim()
                 if (normalizedNumber.isEmpty()) {
-                    return@mapLatest ContactWithCompanyName(Contact.unknown(""), "")
+                    return@mapLatest ContactWithCompanyName(
+                        Contact(id = -1, name = "Private Number", phone = "", image = null), ""
+                    )
                 }
 
                 val realContact = contactsRepository.getContactByPhone(normalizedNumber)

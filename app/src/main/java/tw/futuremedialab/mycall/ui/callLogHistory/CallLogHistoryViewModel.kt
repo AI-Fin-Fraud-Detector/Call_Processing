@@ -50,7 +50,7 @@ class CallLogHistoryViewModel @Inject constructor(
             }
             _uiState.value = _uiState.value.copy(
                 isLoading = false,
-                title = contact?.name ?: cachedName.ifBlank { phone },
+                title = contact?.name ?: cachedName.ifBlank { phone.ifBlank { "Private Number" } },
                 phone = contact?.phone ?: phone,
                 logs = groupedLogs,
                 isBlocked = blockedNumberRepository.isBlocked(contact?.phone ?: phone),

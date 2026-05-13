@@ -27,9 +27,9 @@ fun Call.callerName(): String {
 }
 
 fun Call.callerPhone(): String {
-    val encodedString = this.details.handle.toString().removePrefix("tel:")
+    val handle = this.details.handle ?: return ""
+    val encodedString = handle.toString().removePrefix("tel:")
     return URLDecoder.decode(encodedString, "UTF-8")
-
 }
 
 @SuppressLint("MissingPermission")

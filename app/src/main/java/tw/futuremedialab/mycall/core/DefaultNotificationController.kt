@@ -226,6 +226,11 @@ class DefaultNotificationController @Inject constructor(
 
     private suspend fun loadContactUi(phone: String): ContactUi {
         contactUiCache[phone]?.let { return it }
+        if (phone.isEmpty()) {
+            val ui = ContactUi(title = "Private Number", subtitle = null, avatar = defaultAvatar())
+            contactUiCache[phone] = ui
+            return ui
+        }
         val contact = contactRepository.getContactByPhone(phone)
         val contactBitmap = contact?.image?.let { contactPhotoProvider.getContactPhotoBitmap(it) }
         val ui = if (contact != null) {

@@ -39,21 +39,18 @@ class CallForegroundService : Service() {
         scope.launch {
             when (action) {
                 ACTION_SHOW_INCOMING -> {
-                    if (phone.isBlank()) return@launch
                     ringToneController.playCallRingTone()
                     val notification = notificationController.buildIncomingCallNotification(phone)
                     startCallForeground(notification)
                 }
 
                 ACTION_SHOW_OUTGOING -> {
-                    if (phone.isBlank()) return@launch
                     ringToneController.stepCallRingTone()
                     val notification = notificationController.buildOutgoingCallNotification(phone)
                     startCallForeground(notification)
                 }
 
                 ACTION_SHOW_ONGOING -> {
-                    if (phone.isBlank()) return@launch
                     ringToneController.stepCallRingTone()
                     val notification = notificationController.buildOngoingCallNotification(phone, duration)
                     startCallForeground(notification)

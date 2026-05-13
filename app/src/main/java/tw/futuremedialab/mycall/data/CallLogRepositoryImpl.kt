@@ -204,7 +204,7 @@ class CallLogRepositoryImpl @Inject constructor(
 
             buildList {
                 while (cursor.moveToNext()) {
-                    val phone = cursor.getString(numberColumnIndex)
+                    val phone = cursor.getString(numberColumnIndex).orEmpty()
                     var simSlot: Int? = null
                     if (simsInfo.size > 1) {
                         simSlot = simsInfo
@@ -215,9 +215,11 @@ class CallLogRepositoryImpl @Inject constructor(
                         ?.toUri()
                         ?.let { uri -> runCatching { ContentUris.parseId(uri) }.getOrNull() }
                     val resolvedContactId = contactIdFromLog
-                        ?: contactIdsByPhone.getOrPut(phone) {
-                            contactDetailProvider.getContactByPhone(phone)?.id
-                        }
+                        ?: if (phone.isNotEmpty()) {
+                            contactIdsByPhone.getOrPut(phone) {
+                                contactDetailProvider.getContactByPhone(phone)?.id
+                            }
+                        } else null
 
                     add(
                         CallLogData(
@@ -230,7 +232,7 @@ class CallLogRepositoryImpl @Inject constructor(
                             callLogType = CallLogType.fromInt(cursor.getInt(phoneTypeColumnIndex)),
                             simSlot = simSlot,
                             image = cursor.getStringOrNull(cachedPhotoUriIndex)?.toUri()
-                                ?: contactPhotoProvider.getContactPhotoUri(phone)
+                                ?: if (phone.isNotEmpty()) contactPhotoProvider.getContactPhotoUri(phone) else null
                         )
                     )
                 }
