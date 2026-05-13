@@ -241,8 +241,8 @@ class DefaultNotificationController @Inject constructor(
             )
         } else {
             ContactUi(
-                title = "Unknown",
-                subtitle = phone,
+                title = phone,
+                subtitle = null,
                 avatar = defaultAvatar()
             )
         }

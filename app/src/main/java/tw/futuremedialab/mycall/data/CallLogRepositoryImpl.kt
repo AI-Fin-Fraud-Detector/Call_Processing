@@ -162,7 +162,7 @@ class CallLogRepositoryImpl @Inject constructor(
                 if (phone.isBlank() || byNumber.containsKey(phone)) continue
 
                 val savedContact = contactDetailProvider.getContactByPhone(phone)
-                val fallbackName = cursor.getStringOrNull(nameIndex).orEmpty().ifBlank { "Unknown" }
+                val fallbackName = cursor.getStringOrNull(nameIndex).orEmpty().ifBlank { phone }
                 val fallbackImage = cursor.getStringOrNull(photoIndex)?.toUri()
 
                 byNumber[phone] = savedContact ?: Contact(

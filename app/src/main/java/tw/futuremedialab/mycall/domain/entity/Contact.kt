@@ -63,7 +63,7 @@ data class Contact(
         fun unknown(phone: String): Contact {
             return Contact(
                 id = -1,
-                name = "Unknown",
+                name = phone,
                 phone = phone,
                 image = null,
             )
