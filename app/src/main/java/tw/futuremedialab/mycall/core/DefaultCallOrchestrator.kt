@@ -5,7 +5,6 @@ import android.telecom.Call
 import android.telecom.Call.Callback
 import android.telecom.VideoProfile
 import android.telephony.TelephonyManager
-import android.util.Log
 import tw.futuremedialab.mycall.App
 import tw.futuremedialab.mycall.domain.CallAction
 import tw.futuremedialab.mycall.domain.CallOrchestrator
@@ -14,6 +13,7 @@ import tw.futuremedialab.mycall.domain.entity.CallDirection
 import tw.futuremedialab.mycall.domain.entity.CallState
 import tw.futuremedialab.mycall.domain.FraudReporter
 import tw.futuremedialab.mycall.domain.repo.BlockedNumberRepository
+import tw.futuremedialab.mycall.util.LoggingUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -68,7 +68,7 @@ class DefaultCallOrchestrator @Inject constructor(
 
     private val telecomCallback = object : Callback() {
         override fun onStateChanged(call: Call, state: Int) {
-            Log.d(TAG, "onStateChanged: state=$state")
+            LoggingUtil.d(TAG, "onStateChanged: state=$state")
             mapCallState(call, state)
         }
     }
@@ -191,7 +191,7 @@ class DefaultCallOrchestrator @Inject constructor(
     }
 
     override fun onCallAdded(call: Call) {
-        Log.d(TAG, "onCallAdded: $call")
+        LoggingUtil.d(TAG, "onCallAdded: $call")
         checkSimState()
         App.needCallLogRefresh = true
         startNewSessionScope()
@@ -238,7 +238,7 @@ class DefaultCallOrchestrator @Inject constructor(
     }
 
     override fun onCallRemoved(call: Call) {
-        Log.d(TAG, "onCallRemoved: $call")
+        LoggingUtil.d(TAG, "onCallRemoved: $call")
         currentCall?.unregisterCallback(telecomCallback)
         callUiEffects.stopCallUi()
 

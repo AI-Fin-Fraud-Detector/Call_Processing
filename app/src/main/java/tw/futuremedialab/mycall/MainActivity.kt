@@ -18,6 +18,7 @@ import tw.futuremedialab.mycall.ui.MainNavGraph
 import tw.futuremedialab.mycall.ui.onboarding.OnboardingActivity
 import tw.futuremedialab.mycall.ui.theme.AmadzTheme
 import tw.futuremedialab.mycall.util.PermissionChecker
+import tw.futuremedialab.mycall.util.LoggingUtil
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -36,8 +37,11 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
+        LoggingUtil.d("MainActivity", "App started")
+
         if (savedInstanceState == null) {
             handleDialIntent(intent)
+            handleDeepLink(intent)
         }
 
         // Not set as default dialer app → go to Onboarding first
@@ -75,9 +79,14 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleDialIntent(intent)
+        handleDeepLink(intent)
     }
 
     private fun handleDialIntent(intent: Intent) {
+        // Skip if this is a deep link (handled separately via handleDeepLink)
+        val data = intent.data
+        if (data?.scheme == "safecall") return
+
         val phoneNumber = extractPhoneNumber(intent) ?: return
         when (intent.action) {
             Intent.ACTION_CALL,
@@ -112,5 +121,20 @@ class MainActivity : ComponentActivity() {
         val fromData = data?.schemeSpecificPart?.takeIf { it.isNotBlank() }
         if (fromData != null) return fromData
         return intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER)?.takeIf { it.isNotBlank() }
+    }
+
+    private fun handleDeepLink(intent: Intent) {
+        val data: Uri? = intent.data
+        if (data?.scheme == "safecall" && data.host == "pair_device") {
+            val pairingCode = data.lastPathSegment?.takeIf { it.isNotBlank() }
+            if (pairingCode != null) {
+                LoggingUtil.d("DeepLink", "Pairing code extracted: $pairingCode")
+                appViewModel.setDeepLinkPairingCode(pairingCode)
+            } else {
+                LoggingUtil.d("DeepLink", "No pairing code in path")
+            }
+        } else {
+            LoggingUtil.d("DeepLink", "Not a pair_device link: scheme=${data?.scheme}, host=${data?.host}")
+        }
     }
 }

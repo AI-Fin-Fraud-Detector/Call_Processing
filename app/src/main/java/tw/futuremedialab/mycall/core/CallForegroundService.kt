@@ -5,11 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.app.ServiceCompat
 import tw.futuremedialab.mycall.domain.NotificationController
 import tw.futuremedialab.mycall.domain.RingToneController
+import tw.futuremedialab.mycall.util.LoggingUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -83,7 +83,7 @@ class CallForegroundService : Service() {
     }
 
     private fun stopServiceInternal() {
-        Log.d(TAG, "Stopping call foreground service")
+        LoggingUtil.d(TAG, "Stopping call foreground service")
         ringToneController.stepCallRingTone()
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()

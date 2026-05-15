@@ -1,11 +1,11 @@
 package tw.futuremedialab.mycall.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.messaging.FirebaseMessaging
 import tw.futuremedialab.mycall.data.local.UserPreferences
 import tw.futuremedialab.mycall.domain.repo.AuthRepository
+import tw.futuremedialab.mycall.util.LoggingUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,8 +31,21 @@ class AppViewModel @Inject constructor(
     private val _startupState = MutableStateFlow<AppStartupState>(AppStartupState.Loading)
     val startupState: StateFlow<AppStartupState> = _startupState.asStateFlow()
 
+    private val _deepLinkPairingCode = MutableStateFlow<String?>(null)
+    val deepLinkPairingCode: StateFlow<String?> = _deepLinkPairingCode.asStateFlow()
+
     init {
         viewModelScope.launch { checkAuthStatus() }
+    }
+
+    fun setDeepLinkPairingCode(code: String) {
+        LoggingUtil.d("DeepLink", "AppViewModel: setting code=$code")
+        _deepLinkPairingCode.value = code
+    }
+
+    fun clearDeepLinkPairingCode() {
+        LoggingUtil.d("DeepLink", "AppViewModel: clearing code")
+        _deepLinkPairingCode.value = null
     }
 
     private suspend fun checkAuthStatus() {
@@ -47,7 +60,7 @@ class AppViewModel @Inject constructor(
                 subscribeFcm(token)
             }
             .onFailure {
-                Log.w(TAG, "Token invalid: ${it.message}")
+                LoggingUtil.w(TAG, "Token invalid: ${it.message}")
                 userPreferences.clearAccessToken()
                 _startupState.value = AppStartupState.NeedsAuth(sessionExpired = true)
             }
@@ -65,9 +78,9 @@ class AppViewModel @Inject constructor(
         try {
             val fcmToken = FirebaseMessaging.getInstance().token.await()
             authRepository.subscribePush(token, fcmToken)
-                .onFailure { Log.w(TAG, "FCM subscribe failed: ${it.message}") }
+                .onFailure { LoggingUtil.w(TAG, "FCM subscribe failed: ${it.message}") }
         } catch (e: Exception) {
-            Log.w(TAG, "Could not get FCM token: ${e.message}")
+            LoggingUtil.w(TAG, "Could not get FCM token: ${e.message}")
         }
     }
 }

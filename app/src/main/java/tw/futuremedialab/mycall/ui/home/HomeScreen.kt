@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import tw.futuremedialab.mycall.ui.home.contacts.ContactsScreen
 import tw.futuremedialab.mycall.ui.home.favourite.FavouritesScreen
 import tw.futuremedialab.mycall.ui.home.searchbar.HomeSearchBar
 import tw.futuremedialab.mycall.ui.home.searchbar.SearchBarState
+import tw.futuremedialab.mycall.ui.debug.DebugLogsScreen
 import tw.futuremedialab.mycall.ui.devicePairing.DevicePairScreen
 import tw.futuremedialab.mycall.ui.settings.BlockedNumbersScreen
 import tw.futuremedialab.mycall.ui.settings.SettingsScreen
@@ -39,10 +41,19 @@ import tw.futuremedialab.mycall.ui.settings.SettingsScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    deepLinkPairingCode: String? = null,
+    onDeepLinkConsumed: () -> Unit = {}
+) {
     val backStack = rememberNavBackStack(RecentsKey)
     val context = LocalContext.current
     val vm: HomeViewModel = hiltViewModel()
+
+    LaunchedEffect(deepLinkPairingCode) {
+        if (!deepLinkPairingCode.isNullOrBlank()) {
+            backStack.add(DevicePairKey)
+        }
+    }
     var searchBarState by rememberSaveable { mutableStateOf(SearchBarState.COLLAPSED) }
     var pendingDialPhone by remember { mutableStateOf<String?>(null) }
     var simOptions by remember { mutableStateOf<List<SimInfo>>(emptyList()) }
@@ -171,6 +182,9 @@ fun HomeScreen() {
                         },
                         onPairDeviceClick = {
                             backStack.add(DevicePairKey)
+                        },
+                        onViewDebugLogsClick = {
+                            backStack.add(DebugLogsKey)
                         }
                     )
                 }
@@ -185,6 +199,17 @@ fun HomeScreen() {
                 }
                 entry(DevicePairKey) {
                     DevicePairScreen(
+                        onBackClick = {
+                            if (backStack.size > 1) {
+                                backStack.removeAt(backStack.lastIndex)
+                            }
+                        },
+                        pairingCode = deepLinkPairingCode,
+                        onPairingCodeReceived = { onDeepLinkConsumed() }
+                    )
+                }
+                entry(DebugLogsKey) {
+                    DebugLogsScreen(
                         onBackClick = {
                             if (backStack.size > 1) {
                                 backStack.removeAt(backStack.lastIndex)

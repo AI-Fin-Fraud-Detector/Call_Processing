@@ -10,8 +10,8 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract
 import android.telephony.TelephonyManager
-import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
+import tw.futuremedialab.mycall.util.LoggingUtil
 import androidx.core.database.getStringOrNull
 import androidx.core.net.toUri
 import com.google.i18n.phonenumbers.NumberParseException
@@ -76,7 +76,7 @@ class ContactsRepositoryImpl @Inject constructor(
 
     override suspend fun getContactsPaged(limit: Int, offset: Int): List<Contact> =
         withContext(ioDispatcher) {
-            Log.d(TAG, "getContactsPaged: $limit, $offset")
+            LoggingUtil.d(TAG, "getContactsPaged: $limit, $offset")
             val contacts = mutableListOf<Contact>()
             contentResolver.query(
                 ContactsContract.Contacts.CONTENT_URI,

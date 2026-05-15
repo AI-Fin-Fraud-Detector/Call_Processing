@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +48,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import tw.futuremedialab.mycall.util.LoggingUtil
 import boofcv.android.ConvertBitmap
 import boofcv.factory.fiducial.FactoryFiducial
 import boofcv.struct.image.GrayU8
@@ -56,9 +58,21 @@ import org.ddogleg.struct.DogArray_I8
 @Composable
 fun DevicePairScreen(
     onBackClick: () -> Unit,
+    pairingCode: String? = null,
+    onPairingCodeReceived: () -> Unit = {},
     vm: DevicePairViewModel = hiltViewModel()
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(pairingCode) {
+        if (!pairingCode.isNullOrBlank()) {
+            LoggingUtil.d("DevicePairScreen", "Received pairing code: $pairingCode")
+            vm.onPairingCodeScanned(pairingCode)
+            onPairingCodeReceived()
+        } else {
+            LoggingUtil.d("DevicePairScreen", "Pairing code is null or blank")
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -161,10 +175,19 @@ fun DevicePairScreen(
 private fun ScanningView(onCodeScanned: (String) -> Unit, modifier: Modifier = Modifier) {
     var manualCode by remember { mutableStateOf("") }
 
+    val extractPairingCode = { qrContent: String ->
+        val code = if (qrContent.startsWith("safecall://pair_device/")) {
+            qrContent.removePrefix("safecall://pair_device/")
+        } else {
+            qrContent
+        }
+        onCodeScanned(code)
+    }
+
     Box(modifier = modifier) {
         Column(modifier = Modifier.fillMaxSize()) {
             QrScannerView(
-                onQrDetected = onCodeScanned,
+                onQrDetected = extractPairingCode,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxSize()
@@ -195,7 +218,7 @@ private fun ScanningView(onCodeScanned: (String) -> Unit, modifier: Modifier = M
                 Button(
                     onClick = {
                         if (manualCode.isNotBlank()) {
-                            onCodeScanned(manualCode)
+                            extractPairingCode(manualCode)
                             manualCode = ""
                         }
                     },

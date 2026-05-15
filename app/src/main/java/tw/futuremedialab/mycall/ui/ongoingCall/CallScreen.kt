@@ -1,7 +1,7 @@
 package tw.futuremedialab.mycall.ui.ongoingCall
 
-import android.util.Log
 import androidx.compose.animation.fadeIn
+import tw.futuremedialab.mycall.util.LoggingUtil
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -84,7 +84,7 @@ fun CallScreen(
 
     var keyboardOpen by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(uiState) {
-        Log.d("CallScreen", "uiState: $uiState")
+        LoggingUtil.d("CallScreen", "uiState: $uiState")
         if (uiState == CallState.CallDisconnected) {
             onFinish()
         }
