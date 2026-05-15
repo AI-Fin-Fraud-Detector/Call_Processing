@@ -46,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import boofcv.android.ConvertBitmap
 import boofcv.factory.fiducial.FactoryFiducial
 import boofcv.struct.image.GrayU8
+import org.ddogleg.struct.DogArray_I8
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -204,7 +205,7 @@ private class BoofCvQrAnalyzer(private val onQrDetected: (String) -> Unit) : Ima
     override fun analyze(imageProxy: ImageProxy) {
         try {
             val bmp = imageProxy.toBitmap()
-            ConvertBitmap.bitmapToGray(bmp, gray, null as ByteArray?)
+            ConvertBitmap.bitmapToGray(bmp, gray, null as DogArray_I8?)
             detector.process(gray)
             val detections = detector.getDetections()
             if (detections.isNotEmpty()) {
