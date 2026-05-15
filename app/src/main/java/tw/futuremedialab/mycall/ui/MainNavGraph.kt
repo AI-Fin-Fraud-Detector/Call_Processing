@@ -20,6 +20,7 @@ data object HomeKey : NavKey
 @Composable
 fun MainNavGraph(appViewModel: AppViewModel = hiltViewModel()) {
     val startupState by appViewModel.startupState.collectAsStateWithLifecycle()
+    val deepLinkPairingCode by appViewModel.deepLinkPairingCode.collectAsStateWithLifecycle()
 
     when (val state = startupState) {
         is AppStartupState.Loading -> {
@@ -39,7 +40,10 @@ fun MainNavGraph(appViewModel: AppViewModel = hiltViewModel()) {
                 backStack = backStack,
                 entryProvider = entryProvider {
                     entry<HomeKey> {
-                        HomeScreen()
+                        HomeScreen(
+                            deepLinkPairingCode = deepLinkPairingCode,
+                            onDeepLinkConsumed = { appViewModel.clearDeepLinkPairingCode() }
+                        )
                     }
                 }
             )

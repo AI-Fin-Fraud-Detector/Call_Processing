@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,9 +57,16 @@ import org.ddogleg.struct.DogArray_I8
 @Composable
 fun DevicePairScreen(
     onBackClick: () -> Unit,
+    pairingCode: String? = null,
     vm: DevicePairViewModel = hiltViewModel()
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(pairingCode) {
+        if (!pairingCode.isNullOrBlank()) {
+            vm.onPairingCodeScanned(pairingCode)
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

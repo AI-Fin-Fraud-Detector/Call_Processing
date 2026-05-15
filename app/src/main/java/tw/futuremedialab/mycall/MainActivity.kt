@@ -38,6 +38,7 @@ class MainActivity : ComponentActivity() {
 
         if (savedInstanceState == null) {
             handleDialIntent(intent)
+            handleDeepLink(intent)
         }
 
         // Not set as default dialer app → go to Onboarding first
@@ -75,6 +76,7 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleDialIntent(intent)
+        handleDeepLink(intent)
     }
 
     private fun handleDialIntent(intent: Intent) {
@@ -112,5 +114,15 @@ class MainActivity : ComponentActivity() {
         val fromData = data?.schemeSpecificPart?.takeIf { it.isNotBlank() }
         if (fromData != null) return fromData
         return intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER)?.takeIf { it.isNotBlank() }
+    }
+
+    private fun handleDeepLink(intent: Intent) {
+        val data: Uri? = intent.data
+        if (data?.scheme == "safecall" && data.host == "pair_device") {
+            val pairingCode = data.lastPathSegment?.takeIf { it.isNotBlank() }
+            if (pairingCode != null) {
+                appViewModel.setDeepLinkPairingCode(pairingCode)
+            }
+        }
     }
 }

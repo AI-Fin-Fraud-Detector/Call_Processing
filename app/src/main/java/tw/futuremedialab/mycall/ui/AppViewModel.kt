@@ -31,8 +31,19 @@ class AppViewModel @Inject constructor(
     private val _startupState = MutableStateFlow<AppStartupState>(AppStartupState.Loading)
     val startupState: StateFlow<AppStartupState> = _startupState.asStateFlow()
 
+    private val _deepLinkPairingCode = MutableStateFlow<String?>(null)
+    val deepLinkPairingCode: StateFlow<String?> = _deepLinkPairingCode.asStateFlow()
+
     init {
         viewModelScope.launch { checkAuthStatus() }
+    }
+
+    fun setDeepLinkPairingCode(code: String) {
+        _deepLinkPairingCode.value = code
+    }
+
+    fun clearDeepLinkPairingCode() {
+        _deepLinkPairingCode.value = null
     }
 
     private suspend fun checkAuthStatus() {
