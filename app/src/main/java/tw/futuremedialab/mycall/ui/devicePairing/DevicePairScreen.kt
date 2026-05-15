@@ -1,6 +1,5 @@
 package tw.futuremedialab.mycall.ui.devicePairing
 
-import android.graphics.Bitmap
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -201,17 +200,13 @@ private fun QrScannerView(onQrDetected: (String) -> Unit, modifier: Modifier = M
 private class BoofCvQrAnalyzer(private val onQrDetected: (String) -> Unit) : ImageAnalysis.Analyzer {
     private val detector = FactoryFiducial.qrcode(null, GrayU8::class.java)
     private val gray = GrayU8()
-    private var bitmap: Bitmap? = null
 
     override fun analyze(imageProxy: ImageProxy) {
         try {
             val bmp = imageProxy.toBitmap()
-            if (bitmap == null || bitmap!!.width != bmp.width || bitmap!!.height != bmp.height) {
-                bitmap = Bitmap.createBitmap(bmp.width, bmp.height, Bitmap.Config.ARGB_8888)
-            }
-            ConvertBitmap.bitmapToGray(bmp, gray, null)
+            ConvertBitmap.bitmapToGray(bmp, gray, null as ByteArray?)
             detector.process(gray)
-            val detections = detector.detections
+            val detections = detector.getDetections()
             if (detections.isNotEmpty()) {
                 onQrDetected(detections[0].message)
             }
