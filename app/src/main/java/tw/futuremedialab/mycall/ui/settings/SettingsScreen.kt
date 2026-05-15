@@ -12,6 +12,7 @@ import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.PhoneCallback
+import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,6 +39,7 @@ import tw.futuremedialab.mycall.core.DtmfTonePrefs
 fun SettingsScreen(
     onBackClick: () -> Unit,
     onBlockedNumbersClick: () -> Unit,
+    onPairDeviceClick: () -> Unit,
     vm: SettingsViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -135,6 +137,18 @@ fun SettingsScreen(
                     )
                 },
                 headlineContent = { Text("Blocked numbers") }
+            )
+
+            ListItem(
+                modifier = Modifier.clickable(onClick = onPairDeviceClick),
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.Default.QrCodeScanner,
+                        contentDescription = "Pair device"
+                    )
+                },
+                headlineContent = { Text("Pair device") },
+                supportingContent = { Text("Scan a QR code to link a device to your account") }
             )
 
             ListItem(

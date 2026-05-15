@@ -44,3 +44,11 @@ data class PushSubscribeResponseDto(
 data class ApiErrorDto(
     val detail: String?
 )
+
+data class DeviceApproveRequestDto(
+    @SerializedName("pairing_code") val pairingCode: String
+)
+
+data class DeviceApproveResponseDto(
+    val status: String
+)

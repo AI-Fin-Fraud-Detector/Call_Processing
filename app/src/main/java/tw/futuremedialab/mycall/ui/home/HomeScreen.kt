@@ -32,6 +32,7 @@ import tw.futuremedialab.mycall.ui.home.contacts.ContactsScreen
 import tw.futuremedialab.mycall.ui.home.favourite.FavouritesScreen
 import tw.futuremedialab.mycall.ui.home.searchbar.HomeSearchBar
 import tw.futuremedialab.mycall.ui.home.searchbar.SearchBarState
+import tw.futuremedialab.mycall.ui.devicePairing.DevicePairScreen
 import tw.futuremedialab.mycall.ui.settings.BlockedNumbersScreen
 import tw.futuremedialab.mycall.ui.settings.SettingsScreen
 
@@ -167,11 +168,23 @@ fun HomeScreen() {
                         },
                         onBlockedNumbersClick = {
                             backStack.add(BlockedNumbersKey)
+                        },
+                        onPairDeviceClick = {
+                            backStack.add(DevicePairKey)
                         }
                     )
                 }
                 entry(BlockedNumbersKey) {
                     BlockedNumbersScreen(
+                        onBackClick = {
+                            if (backStack.size > 1) {
+                                backStack.removeAt(backStack.lastIndex)
+                            }
+                        }
+                    )
+                }
+                entry(DevicePairKey) {
+                    DevicePairScreen(
                         onBackClick = {
                             if (backStack.size > 1) {
                                 backStack.removeAt(backStack.lastIndex)

@@ -59,6 +59,9 @@ data object SettingsKey : NavKey
 data object BlockedNumbersKey : NavKey
 
 @Serializable
+data object DevicePairKey : NavKey
+
+@Serializable
 data class CallLogHistoryKey(
     val phone: String,
     val contactName: String,

@@ -5,6 +5,7 @@ import tw.futuremedialab.mycall.data.network.AuthApiService
 import tw.futuremedialab.mycall.data.network.FraudApiService
 import tw.futuremedialab.mycall.data.network.PushApiService
 import tw.futuremedialab.mycall.data.network.dto.ApiErrorDto
+import tw.futuremedialab.mycall.data.network.dto.DeviceApproveRequestDto
 import tw.futuremedialab.mycall.data.network.dto.FraudReportRequestDto
 import tw.futuremedialab.mycall.data.network.dto.LoginRequestDto
 import tw.futuremedialab.mycall.data.network.dto.PushSubscribeRequestDto
@@ -71,6 +72,22 @@ class AuthRepositoryImpl @Inject constructor(
             FraudReportRequestDto(phoneNumber = phoneNumber, callerName = callerName)
         )
         if (!response.isSuccessful) error("Call report failed (${response.code()})")
+    }
+
+    override suspend fun approveDevicePairing(token: String, pairingCode: String): Result<Unit> = runCatching {
+        val response = authApiService.approveDevice(
+            "Bearer $token",
+            DeviceApproveRequestDto(pairingCode = pairingCode)
+        )
+        if (!response.isSuccessful) {
+            val detail = parseErrorDetail(response.errorBody()?.string())
+            val fallback = when (response.code()) {
+                401 -> "You need to be logged in to pair a device."
+                404 -> "This QR code has expired or was already used."
+                else -> "Pairing failed (${response.code()})"
+            }
+            error(detail ?: fallback)
+        }
     }
 
     private fun parseErrorDetail(body: String?): String? = try {
