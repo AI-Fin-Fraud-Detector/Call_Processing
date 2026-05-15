@@ -80,6 +80,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleDialIntent(intent: Intent) {
+        // Skip if this is a deep link (handled separately via handleDeepLink)
+        val data = intent.data
+        if (data?.scheme == "safecall") return
+
         val phoneNumber = extractPhoneNumber(intent) ?: return
         when (intent.action) {
             Intent.ACTION_CALL,
