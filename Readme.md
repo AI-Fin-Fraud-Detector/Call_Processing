@@ -1,6 +1,6 @@
 # MyCall — A Sip / Calling Application
 
-A modern open-source Android calling application built with Jetpack Compose. Forked from [amadz](https://github.com/amadz) and extended with authentication, fraud reporting, and remote management capabilities.
+A modern open-source Android calling application built with Jetpack Compose. Forked from [Amadz](https://github.com/msusman1/Amadz) and extended with authentication, fraud reporting, and remote management capabilities.
 
 ## Installation
 
