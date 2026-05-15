@@ -6,13 +6,13 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.ContactsContract
 import android.telephony.PhoneNumberUtils
-import android.util.Log
 import android.util.LruCache
 import androidx.core.net.toUri
 import coil3.decode.DecodeUtils
 import coil3.size.Scale
 import tw.futuremedialab.mycall.di.IODispatcher
 import tw.futuremedialab.mycall.domain.repo.ContactPhotoProvider
+import tw.futuremedialab.mycall.util.LoggingUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -103,10 +103,10 @@ class ContactPhotoProviderImpl @Inject constructor(
             }
 
         } catch (e: SecurityException) {
-            Log.e("ContactFetcher", "Permission denied while loading contact image", e)
+            LoggingUtil.e("ContactFetcher", "Permission denied while loading contact image", e)
             null
         } catch (e: IOException) {
-            Log.e("ContactFetcher", "Error loading contact image", e)
+            LoggingUtil.e("ContactFetcher", "Error loading contact image", e)
             null
         }
     }

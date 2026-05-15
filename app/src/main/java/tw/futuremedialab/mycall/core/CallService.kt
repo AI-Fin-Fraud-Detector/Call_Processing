@@ -3,9 +3,9 @@ package tw.futuremedialab.mycall.core
 import android.telecom.Call
 import android.telecom.CallAudioState
 import android.telecom.InCallService
-import android.util.Log
 import tw.futuremedialab.mycall.domain.CallServiceAudioDelegate
 import tw.futuremedialab.mycall.domain.CallOrchestrator
+import tw.futuremedialab.mycall.util.LoggingUtil
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -18,7 +18,7 @@ class CallService : InCallService(), CallServiceAudioDelegate {
 
 
     override fun onCreate() {
-        Log.d(TAG, "onCreate")
+        LoggingUtil.d(TAG, "onCreate")
         super.onCreate()
         callOrchestrator.setCallServiceAudioDelegate(this)
     }
@@ -34,7 +34,7 @@ class CallService : InCallService(), CallServiceAudioDelegate {
     }
 
     override fun onDestroy() {
-        Log.d(TAG, "onDestroy")
+        LoggingUtil.d(TAG, "onDestroy")
         callOrchestrator.onDestroy()
         super.onDestroy()
     }

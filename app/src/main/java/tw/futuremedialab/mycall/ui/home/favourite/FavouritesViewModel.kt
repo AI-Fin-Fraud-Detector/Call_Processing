@@ -1,11 +1,11 @@
 package tw.futuremedialab.mycall.ui.home.favourite
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import tw.futuremedialab.mycall.domain.entity.Contact
 import tw.futuremedialab.mycall.domain.repo.CallLogRepository
 import tw.futuremedialab.mycall.domain.repo.ContactRepository
+import tw.futuremedialab.mycall.util.LoggingUtil
 import tw.futuremedialab.mycall.ui.extensions.stateInScoped
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +35,7 @@ class FavouritesViewModel @Inject constructor(
 
     fun removeFromFavourites(contactId: Long) = viewModelScope.launch {
         runCatching { contactRepository.removeFromFavourites(contactId) }
-            .onFailure { Log.d("favmeod", "removeFromFavourites: ${it.message}") }
+            .onFailure { LoggingUtil.d("favmeod", "removeFromFavourites: ${it.message}") }
     }
 
     private fun loadFrequent() = viewModelScope.launch {
@@ -43,7 +43,7 @@ class FavouritesViewModel @Inject constructor(
             .onSuccess {
                 _frequentCalledContacts.value = it
             }.onFailure {
-                Log.d("favmeod", "loadFrequent: ${it.message}")
+                LoggingUtil.d("favmeod", "loadFrequent: ${it.message}")
             }
 
     }

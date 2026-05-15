@@ -1,12 +1,12 @@
 package tw.futuremedialab.mycall.core
 
-import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import tw.futuremedialab.mycall.data.local.UserPreferences
 import tw.futuremedialab.mycall.domain.CallAction
 import tw.futuremedialab.mycall.domain.CallOrchestrator
 import tw.futuremedialab.mycall.domain.repo.AuthRepository
+import tw.futuremedialab.mycall.util.LoggingUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,19 +32,19 @@ class AmadzFirebaseMessagingService : FirebaseMessagingService() {
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onNewToken(token: String) {
-        Log.d(TAG, "FCM token refreshed")
+        LoggingUtil.d(TAG, "FCM token refreshed")
         serviceScope.launch {
             val accessToken = userPreferences.getAccessToken() ?: return@launch
             authRepository.subscribePush(accessToken, token)
-                .onFailure { Log.w(TAG, "Re-subscribe failed: ${it.message}") }
+                .onFailure { LoggingUtil.w(TAG, "Re-subscribe failed: ${it.message}") }
         }
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
-        Log.d(TAG, "FCM message received: ${message.data}")
+        LoggingUtil.d(TAG, "FCM message received: ${message.data}")
         when (message.data["action"]) {
             "hangup" -> {
-                Log.d(TAG, "Hangup command received, disconnecting active call")
+                LoggingUtil.d(TAG, "Hangup command received, disconnecting active call")
                 callOrchestrator.onAction(CallAction.Hangup)
             }
         }

@@ -18,6 +18,7 @@ import tw.futuremedialab.mycall.ui.MainNavGraph
 import tw.futuremedialab.mycall.ui.onboarding.OnboardingActivity
 import tw.futuremedialab.mycall.ui.theme.AmadzTheme
 import tw.futuremedialab.mycall.util.PermissionChecker
+import tw.futuremedialab.mycall.util.LoggingUtil
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -125,13 +126,13 @@ class MainActivity : ComponentActivity() {
         if (data?.scheme == "safecall" && data.host == "pair_device") {
             val pairingCode = data.lastPathSegment?.takeIf { it.isNotBlank() }
             if (pairingCode != null) {
-                android.util.Log.d("DeepLink", "Pairing code extracted: $pairingCode")
+                LoggingUtil.d("DeepLink", "Pairing code extracted: $pairingCode")
                 appViewModel.setDeepLinkPairingCode(pairingCode)
             } else {
-                android.util.Log.d("DeepLink", "No pairing code in path")
+                LoggingUtil.d("DeepLink", "No pairing code in path")
             }
         } else {
-            android.util.Log.d("DeepLink", "Not a pair_device link: scheme=${data?.scheme}, host=${data?.host}")
+            LoggingUtil.d("DeepLink", "Not a pair_device link: scheme=${data?.scheme}, host=${data?.host}")
         }
     }
 }
