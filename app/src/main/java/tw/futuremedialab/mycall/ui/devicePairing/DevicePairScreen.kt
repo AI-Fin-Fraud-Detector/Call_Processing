@@ -43,8 +43,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.camera.core.ExperimentalGetImage
-import boofcv.android.ConvertCameraImage
+import boofcv.android.ConvertBitmap
 import boofcv.factory.fiducial.FactoryFiducial
 import boofcv.struct.image.GrayU8
 
@@ -202,13 +201,12 @@ private class BoofCvQrAnalyzer(private val onQrDetected: (String) -> Unit) : Ima
     private val detector = FactoryFiducial.qrcode(null, GrayU8::class.java)
     private val gray = GrayU8()
 
-    @OptIn(ExperimentalGetImage::class)
     override fun analyze(imageProxy: ImageProxy) {
         try {
-            val mediaImage = imageProxy.image ?: return
-            ConvertCameraImage.imageToGray(mediaImage, gray, null as ByteArray?)
+            val bmp = imageProxy.toBitmap()
+            ConvertBitmap.bitmapToGray(bmp, gray, null as ByteArray?)
             detector.process(gray)
-            val detections = detector.detections
+            val detections = detector.getDetections()
             if (detections.isNotEmpty()) {
                 onQrDetected(detections[0].message)
             }
