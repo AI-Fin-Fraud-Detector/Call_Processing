@@ -37,6 +37,8 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
+        LoggingUtil.d("MainActivity", "App started")
+
         if (savedInstanceState == null) {
             handleDialIntent(intent)
             handleDeepLink(intent)
