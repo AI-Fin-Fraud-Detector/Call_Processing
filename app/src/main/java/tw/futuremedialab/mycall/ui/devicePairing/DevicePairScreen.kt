@@ -48,6 +48,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import tw.futuremedialab.mycall.util.LoggingUtil
 import boofcv.android.ConvertBitmap
 import boofcv.factory.fiducial.FactoryFiducial
 import boofcv.struct.image.GrayU8
@@ -64,7 +65,10 @@ fun DevicePairScreen(
 
     LaunchedEffect(pairingCode) {
         if (!pairingCode.isNullOrBlank()) {
+            LoggingUtil.d("DevicePairScreen", "Received pairing code: $pairingCode")
             vm.onPairingCodeScanned(pairingCode)
+        } else {
+            LoggingUtil.d("DevicePairScreen", "Pairing code is null or blank")
         }
     }
 
