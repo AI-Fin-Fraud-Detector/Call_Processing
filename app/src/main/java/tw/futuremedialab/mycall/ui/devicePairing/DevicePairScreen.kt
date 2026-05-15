@@ -169,10 +169,19 @@ fun DevicePairScreen(
 private fun ScanningView(onCodeScanned: (String) -> Unit, modifier: Modifier = Modifier) {
     var manualCode by remember { mutableStateOf("") }
 
+    val extractPairingCode = { qrContent: String ->
+        val code = if (qrContent.startsWith("safecall://pair_device/")) {
+            qrContent.removePrefix("safecall://pair_device/")
+        } else {
+            qrContent
+        }
+        onCodeScanned(code)
+    }
+
     Box(modifier = modifier) {
         Column(modifier = Modifier.fillMaxSize()) {
             QrScannerView(
-                onQrDetected = onCodeScanned,
+                onQrDetected = extractPairingCode,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxSize()
@@ -203,7 +212,7 @@ private fun ScanningView(onCodeScanned: (String) -> Unit, modifier: Modifier = M
                 Button(
                     onClick = {
                         if (manualCode.isNotBlank()) {
-                            onCodeScanned(manualCode)
+                            extractPairingCode(manualCode)
                             manualCode = ""
                         }
                     },
