@@ -42,27 +42,3 @@ object LogCollector {
 
     fun getLogs(): List<LogEntry> = logs.toList()
 }
-
-class LoggingTree : Log.Logger {
-    override fun isLoggable(tag: String?, level: Int): Boolean = true
-
-    override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        val levelName = when (priority) {
-            Log.VERBOSE -> "V"
-            Log.DEBUG -> "D"
-            Log.INFO -> "I"
-            Log.WARN -> "W"
-            Log.ERROR -> "E"
-            Log.ASSERT -> "A"
-            else -> "?"
-        }
-
-        val msg = if (t != null) {
-            "$message\n${android.util.Log.getStackTraceString(t)}"
-        } else {
-            message
-        }
-
-        LogCollector.addLog(levelName, tag ?: "Unknown", msg)
-    }
-}
