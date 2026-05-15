@@ -59,6 +59,7 @@ import org.ddogleg.struct.DogArray_I8
 fun DevicePairScreen(
     onBackClick: () -> Unit,
     pairingCode: String? = null,
+    onPairingCodeReceived: () -> Unit = {},
     vm: DevicePairViewModel = hiltViewModel()
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
@@ -67,6 +68,7 @@ fun DevicePairScreen(
         if (!pairingCode.isNullOrBlank()) {
             LoggingUtil.d("DevicePairScreen", "Received pairing code: $pairingCode")
             vm.onPairingCodeScanned(pairingCode)
+            onPairingCodeReceived()
         } else {
             LoggingUtil.d("DevicePairScreen", "Pairing code is null or blank")
         }

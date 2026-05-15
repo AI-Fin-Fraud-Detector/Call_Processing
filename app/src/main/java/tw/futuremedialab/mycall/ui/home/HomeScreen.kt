@@ -52,7 +52,6 @@ fun HomeScreen(
     LaunchedEffect(deepLinkPairingCode) {
         if (!deepLinkPairingCode.isNullOrBlank()) {
             backStack.add(DevicePairKey)
-            onDeepLinkConsumed()
         }
     }
     var searchBarState by rememberSaveable { mutableStateOf(SearchBarState.COLLAPSED) }
@@ -205,7 +204,8 @@ fun HomeScreen(
                                 backStack.removeAt(backStack.lastIndex)
                             }
                         },
-                        pairingCode = deepLinkPairingCode
+                        pairingCode = deepLinkPairingCode,
+                        onPairingCodeReceived = { onDeepLinkConsumed() }
                     )
                 }
                 entry(DebugLogsKey) {
