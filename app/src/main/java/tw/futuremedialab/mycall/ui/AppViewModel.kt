@@ -39,10 +39,12 @@ class AppViewModel @Inject constructor(
     }
 
     fun setDeepLinkPairingCode(code: String) {
+        Log.d("DeepLink", "AppViewModel: setting code=$code")
         _deepLinkPairingCode.value = code
     }
 
     fun clearDeepLinkPairingCode() {
+        Log.d("DeepLink", "AppViewModel: clearing code")
         _deepLinkPairingCode.value = null
     }
 

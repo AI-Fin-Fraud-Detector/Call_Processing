@@ -125,8 +125,13 @@ class MainActivity : ComponentActivity() {
         if (data?.scheme == "safecall" && data.host == "pair_device") {
             val pairingCode = data.lastPathSegment?.takeIf { it.isNotBlank() }
             if (pairingCode != null) {
+                android.util.Log.d("DeepLink", "Pairing code extracted: $pairingCode")
                 appViewModel.setDeepLinkPairingCode(pairingCode)
+            } else {
+                android.util.Log.d("DeepLink", "No pairing code in path")
             }
+        } else {
+            android.util.Log.d("DeepLink", "Not a pair_device link: scheme=${data?.scheme}, host=${data?.host}")
         }
     }
 }

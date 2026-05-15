@@ -33,6 +33,7 @@ import tw.futuremedialab.mycall.ui.home.contacts.ContactsScreen
 import tw.futuremedialab.mycall.ui.home.favourite.FavouritesScreen
 import tw.futuremedialab.mycall.ui.home.searchbar.HomeSearchBar
 import tw.futuremedialab.mycall.ui.home.searchbar.SearchBarState
+import tw.futuremedialab.mycall.ui.debug.DebugLogsScreen
 import tw.futuremedialab.mycall.ui.devicePairing.DevicePairScreen
 import tw.futuremedialab.mycall.ui.settings.BlockedNumbersScreen
 import tw.futuremedialab.mycall.ui.settings.SettingsScreen
@@ -182,6 +183,9 @@ fun HomeScreen(
                         },
                         onPairDeviceClick = {
                             backStack.add(DevicePairKey)
+                        },
+                        onViewDebugLogsClick = {
+                            backStack.add(DebugLogsKey)
                         }
                     )
                 }
@@ -202,6 +206,15 @@ fun HomeScreen(
                             }
                         },
                         pairingCode = deepLinkPairingCode
+                    )
+                }
+                entry(DebugLogsKey) {
+                    DebugLogsScreen(
+                        onBackClick = {
+                            if (backStack.size > 1) {
+                                backStack.removeAt(backStack.lastIndex)
+                            }
+                        }
                     )
                 }
             }

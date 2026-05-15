@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Block
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.PhoneCallback
 import androidx.compose.material.icons.filled.QrCodeScanner
@@ -40,6 +41,7 @@ fun SettingsScreen(
     onBackClick: () -> Unit,
     onBlockedNumbersClick: () -> Unit,
     onPairDeviceClick: () -> Unit,
+    onViewDebugLogsClick: () -> Unit = {},
     vm: SettingsViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -161,6 +163,18 @@ fun SettingsScreen(
                 },
                 headlineContent = { Text("Clear call logs") },
                 supportingContent = { Text("Delete all call history") }
+            )
+
+            ListItem(
+                modifier = Modifier.clickable(onClick = onViewDebugLogsClick),
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.Default.BugReport,
+                        contentDescription = "Debug logs"
+                    )
+                },
+                headlineContent = { Text("Debug logs") },
+                supportingContent = { Text("View app debug logs for troubleshooting") }
             )
         }
     }
